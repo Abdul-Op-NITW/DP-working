@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int t[1001];
+int dp[101][1001]; // dp[level][remaining_sum]
+
+int rec(int level, int item_taken) {
+    // pruning
+   // if (item_taken < 0) return 0;
+
+    // base case
+    if (level == n) {
+        return (item_taken == 0) ? 1 : 0;
+    }
+
+    // cache check
+    if (dp[level][item_taken] != -1)
+        return dp[level][item_taken];
+
+    int ans = 0;
+
+    // option 1: skip current item
+    if (rec(level + 1, item_taken) == 1) ans = 1;
+
+    // option 2: take current item
+    if (rec(level + 1, item_taken - t[level]) == 1) ans = 1;
+
+    // save and return
+    return dp[level][item_taken] = ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> n >> q;
+    for (int i = 0; i < n; i++) {
+        cin >> t[i];
+    }
+
+    vector<int> queries(q);
+    for (int i = 0; i < q; i++) {
+        cin >> queries[i];
+    }
+ memset(dp, -1, sizeof(dp)); // reset DP once
+    vector<int> answers(q);
+    for (int i = 0; i < q; i++) {
+        answers[i] = rec(0, queries[i]);
+    }
+
+    for (int i : answers) cout << i << " ";
+    cout << "\n";
+
+    return 0;
+}
+//how is this working without pruning and only setting memset once by power int_taken but here left is checked at each stage its working
